@@ -39,10 +39,10 @@ class TranslationUpdateCommandTest extends TestCase
 
     public function testDumpMessagesAndClean()
     {
-        $tester = $this->createCommandTester(['messages' => ['foo' => 'foo']]);
+        $tester = $this->createCommandTester(['messages' => ['foo' => 'foo', 'bar' => 'bar']]);
         $tester->execute(['command' => 'translation:extract', 'locale' => 'en', 'bundle' => 'foo', '--dump-messages' => true, '--clean' => true]);
-        $this->assertMatchesRegularExpression('/foo/', $tester->getDisplay());
-        $this->assertMatchesRegularExpression('/1 message was successfully extracted/', $tester->getDisplay());
+        $this->assertMatchesRegularExpression('/\*foo\*bar/', preg_replace('/\s+/', '', $tester->getDisplay()));
+        $this->assertMatchesRegularExpression('/2 messages were successfully extracted/', $tester->getDisplay());
     }
 
     public function testDumpMessagesAsTreeAndClean()
@@ -72,7 +72,7 @@ class TranslationUpdateCommandTest extends TestCase
     public function testDumpSortWithoutValueAndClean()
     {
         $tester = $this->createCommandTester(['messages' => ['foo' => 'foo', 'test' => 'test', 'bar' => 'bar']]);
-        $tester->execute(['command' => 'translation:extract', 'locale' => 'en', 'bundle' => 'foo', '--dump-messages' => true, '--clean' => true, '--sort']);
+        $tester->execute(['command' => 'translation:extract', 'locale' => 'en', 'bundle' => 'foo', '--dump-messages' => true, '--clean' => true, '--sort' => null]);
         $this->assertMatchesRegularExpression("/\*bar\*foo\*test/", preg_replace('/\s+/', '', $tester->getDisplay()));
         $this->assertMatchesRegularExpression('/3 messages were successfully extracted/', $tester->getDisplay());
     }
